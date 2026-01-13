@@ -74,6 +74,11 @@ export async function registerRoutes(
     res.json(user);
   });
 
+  app.get(api.auth.leaderboard.path, async (_req, res) => {
+    const topUsers = await storage.getTopUsers(10);
+    res.json(topUsers);
+  });
+
   // Progress Routes
   app.post(api.progress.update.path, async (req, res) => {
     const userId = (req.session as any).userId;

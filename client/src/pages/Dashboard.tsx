@@ -1,11 +1,16 @@
 import { useAuth } from "@/hooks/use-auth";
 import { ranks, getRank, achievements } from "@/data/labs";
-import { Flame, Target, Trophy, Clock, Database, Code, Shield } from "lucide-react";
+import { Flame, Target, Trophy, Clock, Database, Code, Shield, Medal } from "lucide-react";
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recharts";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@shared/routes";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const { data: leaderboard = [] } = useQuery<any[]>({
+    queryKey: [api.auth.leaderboard.path],
+  });
   
   if (!user) return null;
 
@@ -80,25 +85,44 @@ export default function Dashboard() {
         </div>
 
         {/* Recent Activity / Achievements */}
-        <div className="bg-card/50 border border-border p-6 rounded-lg backdrop-blur-sm">
-          <h3 className="font-display text-lg mb-6 flex items-center gap-2">
-            <Shield className="w-5 h-5 text-secondary" /> BADGES
-          </h3>
-          <div className="space-y-4">
-            {achievements.slice(0, 3).map((ach) => (
-              <motion.div 
-                key={ach.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="flex items-center gap-4 p-3 rounded bg-background/50 border border-border/50"
-              >
-                <div className="text-2xl grayscale opacity-50">{ach.icon}</div>
-                <div>
-                  <div className="font-bold text-sm text-muted-foreground">{ach.name}</div>
-                  <div className="text-xs text-muted-foreground/50">{ach.desc}</div>
+        <div className="bg-card/50 border border-border p-6 rounded-lg backdrop-blur-sm space-y-8">
+          <div>
+            <h3 className="font-display text-lg mb-6 flex items-center gap-2">
+              <Shield className="w-5 h-5 text-secondary" /> BADGES
+            </h3>
+            <div className="space-y-4">
+              {achievements.slice(0, 3).map((ach) => (
+                <motion.div 
+                  key={ach.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="flex items-center gap-4 p-3 rounded bg-background/50 border border-border/50"
+                >
+                  <div className="text-2xl grayscale opacity-50">{ach.icon}</div>
+                  <div>
+                    <div className="font-bold text-sm text-muted-foreground">{ach.name}</div>
+                    <div className="text-xs text-muted-foreground/50">{ach.desc}</div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <h3 className="font-display text-lg mb-6 flex items-center gap-2">
+              <Medal className="w-5 h-5 text-yellow-500" /> TOP OPERATIVES
+            </h3>
+            <div className="space-y-2">
+              {leaderboard.map((op, idx) => (
+                <div key={op.id} className="flex items-center justify-between p-2 rounded bg-background/30 text-xs border border-border/30">
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground font-mono">#{idx + 1}</span>
+                    <span className={cn(op.id === user.id ? "text-primary font-bold" : "text-foreground")}>{op.username}</span>
+                  </div>
+                  <div className="font-mono text-primary">{op.stats.points} PTS</div>
                 </div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>

@@ -36,7 +36,14 @@ export const api = {
         200: z.custom<typeof users.$inferSelect>(),
         401: z.object({ message: z.string() }),
       },
-    }
+    },
+    leaderboard: {
+      method: "GET",
+      path: "/api/leaderboard",
+      responses: {
+        200: z.array(z.custom<typeof users.$inferSelect>()),
+      },
+    },
   },
   progress: {
     update: {
