@@ -127,6 +127,7 @@ export default function Labs() {
 function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose: () => void }) {
   const [method, setMethod] = useState('GET');
   const [activeTab, setActiveWorkspaceTab] = useState<'request' | 'solution'>('request');
+  const [showSolutionContent, setShowSolutionContent] = useState(false);
   const [path, setPath] = useState(lab.endpoint);
   const [headers, setHeaders] = useState('Cookie: session=xyz123\nAccept: */*');
   const [body, setBody] = useState('');
@@ -370,17 +371,38 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
                   exit={{ opacity: 0, x: 10 }}
                   className="space-y-6"
                 >
-                  <div>
-                    <h3 className="text-sm font-mono text-accent mb-2 uppercase tracking-wider">Decrypted Solution</h3>
-                    <div className="bg-accent/5 border border-accent/20 p-4 rounded text-sm text-muted-foreground leading-relaxed italic">
-                      {lab.solution || "No solution provided for this target. Rely on your intelligence feed."}
+                  {!showSolutionContent ? (
+                    <div className="space-y-6">
+                      <div className="p-6 rounded-lg border border-yellow-500/30 bg-yellow-500/5 text-center space-y-4">
+                        <AlertTriangle className="w-10 h-10 text-yellow-500 mx-auto opacity-50" />
+                        <p className="text-sm font-mono text-yellow-500">
+                          WARNING: Accessing the solution will decrease your tactical performance rating for this mission.
+                        </p>
+                        <CyberButton 
+                          variant="secondary" 
+                          size="sm" 
+                          onClick={() => setShowSolutionContent(true)}
+                          className="w-full border-yellow-500/50 text-yellow-500 hover:bg-yellow-500/10"
+                        >
+                          DECRYPT SOLUTION
+                        </CyberButton>
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-4 rounded border border-yellow-500/20 bg-yellow-500/5">
-                    <p className="text-[10px] font-mono text-yellow-500/70">
-                      WARNING: Accessing the solution will decrease your tactical performance rating for this mission.
-                    </p>
-                  </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div>
+                        <h3 className="text-sm font-mono text-accent mb-2 uppercase tracking-wider">Decrypted Solution</h3>
+                        <div className="bg-accent/5 border border-accent/20 p-4 rounded text-sm text-muted-foreground leading-relaxed italic">
+                          {lab.solution || "No solution provided for this target. Rely on your intelligence feed."}
+                        </div>
+                      </div>
+                      <div className="p-4 rounded border border-yellow-500/20 bg-yellow-500/5">
+                        <p className="text-[10px] font-mono text-yellow-500/70 uppercase">
+                          TACTICAL RATING DEGRADED // DATA ACCESSED
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
