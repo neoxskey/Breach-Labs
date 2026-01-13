@@ -9,6 +9,7 @@ export interface Lab {
   endpoint: string;
   vulnerability: string;
   hints: string[];
+  solution?: string;
 }
 
 export interface Topic {
@@ -42,7 +43,8 @@ export const topics: Topic[] = [
           "Use OR 1=1 to make the condition always true",
           "Comment out the rest of the query with --",
           "Final payload: ' OR 1=1--"
-        ]
+        ],
+        solution: "Append ' OR 1=1-- to the category parameter in the URL. For example: /filter?category=Gifts' OR 1=1--. This makes the database query return all items because 1=1 is always true."
       },
       {
         id: 'sqli-2',
@@ -58,7 +60,8 @@ export const topics: Topic[] = [
           "The -- comments out the password check",
           "Leave password field empty or any value",
           "You'll be logged in as administrator"
-        ]
+        ],
+        solution: "Enter administrator'-- in the username field and anything in the password field. The -- comments out the rest of the SQL query that would normally check the password, allowing you to log in as the first user found (administrator)."
       },
       {
         id: 'sqli-3',

@@ -126,6 +126,7 @@ export default function Labs() {
 
 function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose: () => void }) {
   const [method, setMethod] = useState('GET');
+  const [activeTab, setActiveWorkspaceTab] = useState<'request' | 'solution'>('request');
   const [path, setPath] = useState(lab.endpoint);
   const [headers, setHeaders] = useState('Cookie: session=xyz123\nAccept: */*');
   const [body, setBody] = useState('');
@@ -308,28 +309,81 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar - Instructions */}
           <div className="w-1/3 border-r bg-card/30 p-6 overflow-y-auto space-y-6">
-            <div>
-              <h3 className="text-sm font-mono text-primary mb-2 uppercase tracking-wider">Mission Briefing</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{lab.description}</p>
-            </div>
-            
-            <div>
-              <h3 className="text-sm font-mono text-primary mb-2 uppercase tracking-wider">Objective</h3>
-              <div className="bg-primary/5 border border-primary/20 p-4 rounded text-sm">
-                {lab.objective}
-              </div>
+            <div className="flex p-1 bg-background/50 rounded-lg border border-border/50 mb-4">
+              <button 
+                onClick={() => setActiveWorkspaceTab('request')}
+                className={cn(
+                  "flex-1 py-1.5 text-[10px] font-mono uppercase tracking-wider rounded transition-all",
+                  activeTab === 'request' ? "bg-primary/20 text-primary shadow-sm" : "text-muted-foreground hover:text-primary"
+                )}
+              >
+                Mission
+              </button>
+              <button 
+                onClick={() => setActiveWorkspaceTab('solution')}
+                className={cn(
+                  "flex-1 py-1.5 text-[10px] font-mono uppercase tracking-wider rounded transition-all",
+                  activeTab === 'solution' ? "bg-accent/20 text-accent shadow-sm" : "text-muted-foreground hover:text-accent"
+                )}
+              >
+                Solution
+              </button>
             </div>
 
-            <div>
-              <h3 className="text-sm font-mono text-accent mb-2 uppercase tracking-wider">Intelligence</h3>
-              <ul className="space-y-2">
-                {lab.hints.map((hint, i) => (
-                  <li key={i} className="text-xs font-mono text-muted-foreground flex items-start gap-2">
-                    <span className="text-accent shrink-0">[{i+1}]</span> {hint}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <AnimatePresence mode="wait">
+              {activeTab === 'request' ? (
+                <motion.div
+                  key="mission"
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -10 }}
+                  className="space-y-6"
+                >
+                  <div>
+                    <h3 className="text-sm font-mono text-primary mb-2 uppercase tracking-wider">Mission Briefing</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{lab.description}</p>
+                  </div>
+                  
+                  <div>
+                    <h3 className="text-sm font-mono text-primary mb-2 uppercase tracking-wider">Objective</h3>
+                    <div className="bg-primary/5 border border-primary/20 p-4 rounded text-sm">
+                      {lab.objective}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-sm font-mono text-accent mb-2 uppercase tracking-wider">Intelligence</h3>
+                    <ul className="space-y-2">
+                      {lab.hints.map((hint, i) => (
+                        <li key={i} className="text-xs font-mono text-muted-foreground flex items-start gap-2">
+                          <span className="text-accent shrink-0">[{i+1}]</span> {hint}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="solution"
+                  initial={{ opacity: 0, x: 10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 10 }}
+                  className="space-y-6"
+                >
+                  <div>
+                    <h3 className="text-sm font-mono text-accent mb-2 uppercase tracking-wider">Decrypted Solution</h3>
+                    <div className="bg-accent/5 border border-accent/20 p-4 rounded text-sm text-muted-foreground leading-relaxed italic">
+                      {lab.solution || "No solution provided for this target. Rely on your intelligence feed."}
+                    </div>
+                  </div>
+                  <div className="p-4 rounded border border-yellow-500/20 bg-yellow-500/5">
+                    <p className="text-[10px] font-mono text-yellow-500/70">
+                      WARNING: Accessing the solution will decrease your tactical performance rating for this mission.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Main Area - Request Builder */}
