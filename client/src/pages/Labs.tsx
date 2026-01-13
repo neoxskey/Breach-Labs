@@ -155,13 +155,109 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
       isSuccess = true;
       resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Dumped all users:\n- admin\n- user1\n- carlos";
     } 
+    else if (lab.id === 'sqli-2' && body.includes("administrator'--")) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Logged in as administrator (Bypass)";
+    }
+    else if (lab.id === 'sqli-3' && path.includes("UNION SELECT NULL")) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Column count discovered: 3";
+    }
+    else if (lab.id === 'sqli-4' && path.includes("UNION SELECT") && (path.includes("users") || path.includes("username"))) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Credentials found:\nadmin:p4ssw0rd\ncarlos:secret";
+    }
     else if (lab.id === 'xss-1' && path.includes('<script>')) {
       isSuccess = true;
       resText = "HTTP/1.1 200 OK\n\n[SUCCESS] XSS Payload Reflected:\n<script>alert(1)</script>";
     }
-    else if (lab.id === 'sqli-2' && body.includes("administrator'--")) {
+    else if (lab.id === 'xss-2' && body.includes('<script>')) {
       isSuccess = true;
-      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Logged in as administrator (Bypass)";
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Stored XSS successful. Payload saved to database.";
+    }
+    else if (lab.id === 'xss-3' && path.includes('"><script>')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] DOM XSS triggered. Script executed in client context.";
+    }
+    else if (lab.id === 'csrf-1' && (body.includes('email=') || path.includes('email='))) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Email change request processed. Victim email updated via CSRF.";
+    }
+    else if (lab.id === 'csrf-2' && method === 'GET' && path.includes('email=')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] CSRF via GET successful. Protection bypassed.";
+    }
+    else if (lab.id === 'auth-1' && (path.includes('carlos') || body.includes('carlos'))) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Valid username enumerated: carlos (Error: Incorrect password)";
+    }
+    else if (lab.id === 'auth-2' && body.includes('username=carlos')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Password reset for carlos successful.";
+    }
+    else if (lab.id === 'auth-3' && path.includes('/my-account')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] 2FA bypassed. Access to /my-account granted.";
+    }
+    else if (lab.id === 'auth-4' && (body.includes('stay-logged-in') || path.includes('cookie'))) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Weak cookie cracked. Access as administrator granted.";
+    }
+    else if (lab.id === 'access-1' && path.includes('administrator-panel')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Unprotected admin panel accessed.";
+    }
+    else if (lab.id === 'access-2' && (body.includes('roleid=2') || path.includes('roleid=2'))) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Role escalation to admin (roleid=2) successful.";
+    }
+    else if (lab.id === 'access-3' && path.includes('id=carlos')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] IDOR successful. Accessing carlos's private data.";
+    }
+    else if (lab.id === 'access-4' && (path.includes('confirm') || body.includes('confirm'))) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Multi-step bypass successful. Operation confirmed without validation.";
+    }
+    else if (lab.id === 'business-1' && (body.includes('price=0') || path.includes('price=0'))) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Price manipulation successful. Item bought for $0.";
+    }
+    else if (lab.id === 'business-2' && (body.includes('quantity=-') || path.includes('quantity=-'))) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Negative quantity logic flaw exploited.";
+    }
+    else if (lab.id === 'business-3' && body.includes('@dontwannacry.com')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Email validation bypassed. Admin domain accepted.";
+    }
+    else if (lab.id === 'business-4' && body.includes('username=administrator')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Parameter injection successful. Admin settings modified.";
+    }
+    else if (lab.id === 'ssrf-1' && path.includes('localhost')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] SSRF to localhost successful. Internal admin panel accessed.";
+    }
+    else if (lab.id === 'ssrf-2' && path.includes('192.168.0')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Internal network scan successful via SSRF.";
+    }
+    else if (lab.id === 'ssrf-3' && (path.includes('127.1') || path.includes('127.0.0.1'))) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] SSRF filter bypass successful.";
+    }
+    else if (lab.id === 'xxe-1' && body.includes('<!ENTITY') && body.includes('/etc/passwd')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] XXE File Disclosure:\nroot:x:0:0:root:/root:/bin/bash";
+    }
+    else if (lab.id === 'xxe-2' && body.includes('169.254.169.254')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] XXE to SSRF successful. Cloud metadata accessed.";
+    }
+    else if (lab.id === 'xxe-3' && body.includes('<!ENTITY') && body.includes('http://')) {
+      isSuccess = true;
+      resText = "HTTP/1.1 200 OK\n\n[SUCCESS] Blind XXE triggered. Out-of-band request sent.";
     }
     // Add default fail states if not specific
     else {
