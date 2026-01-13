@@ -5,6 +5,7 @@ import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from "recha
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@shared/routes";
+import { cn } from "@/lib/utils";
 
 export default function Dashboard() {
   const { user } = useAuth();
