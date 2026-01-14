@@ -1,8 +1,8 @@
-# Cyber Academy Pro
+# BreachLabs
 
 ## Overview
 
-Cyber Academy Pro is an interactive cybersecurity training platform that simulates hands-on security labs. Users can practice exploiting common web vulnerabilities (SQL injection, XSS, CSRF, authentication flaws, etc.) in a safe, gamified environment. The platform features user authentication, progress tracking, achievement systems, and a dark cyberpunk-themed UI.
+BreachLabs is an interactive cybersecurity training platform that simulates hands-on security labs. Users can practice exploiting common web vulnerabilities (SQL injection, XSS, CSRF, authentication flaws, etc.) in a safe, gamified environment. The platform features user authentication, progress tracking, achievement systems, and a dark cyberpunk-themed UI.
 
 ## User Preferences
 

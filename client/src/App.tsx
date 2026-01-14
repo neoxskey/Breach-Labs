@@ -33,10 +33,10 @@ function Layout({ children }: { children: React.ReactNode }) {
       <header className="h-16 border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50 px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-black font-bold font-display">
-            CP
+            BL
           </div>
           <span className="font-display font-bold tracking-widest text-lg hidden md:inline-block">
-            CYBER<span className="text-primary">ACADEMY</span> PRO
+            BREACH<span className="text-primary">LABS</span>
           </span>
         </div>
 
