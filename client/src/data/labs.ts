@@ -1,4 +1,4 @@
-import { Database, Code, Shield, Lock, Target, Zap, Network, Terminal } from "lucide-react";
+import { Database, Code, Shield, Lock, Target, Zap, Network, Terminal, Search } from "lucide-react";
 
 export interface Lab {
   id: string;
@@ -667,6 +667,93 @@ export const topics: Topic[] = [
           "Use a webshell to execute commands"
         ],
         solution: "Upload a file named 'shell.php' (or similar) containing a webshell like `<?php system($_GET['cmd']); ?>`. Then navigate to /uploads/shell.php?cmd=whoami to execute commands on the server."
+      }
+    ]
+  },
+  {
+    id: 'parameter-tampering',
+    name: 'Parameter Tampering',
+    icon: Target,
+    labs: 2,
+    color: 'text-amber-500',
+    labList: [
+      {
+        id: 'param-1',
+        title: 'Parameter Tampering',
+        difficulty: 'apprentice',
+        description: 'Manipulate hidden parameters to change application behavior.',
+        objective: 'Change the shipping cost to $0.00.',
+        endpoint: '/checkout',
+        vulnerability: 'Parameter Tampering',
+        hints: [
+          "Inspect the hidden fields in the checkout form",
+          "Look for a parameter that controls the shipping fee",
+          "Can you modify this value before submitting the form?"
+        ],
+        solution: "In the checkout page, find the hidden input field named 'shipping_cost'. Use browser developer tools or a proxy to change its value from 15.00 to 0.00 before clicking 'Complete Purchase'."
+      },
+      {
+        id: 'param-2',
+        title: 'No Rate Limit + Bypass Filter',
+        difficulty: 'practitioner',
+        description: 'Bypass security filters and exploit lack of rate limiting.',
+        objective: 'Force the application to process 1000 requests in a short time.',
+        endpoint: '/api/v1/process',
+        vulnerability: 'Rate Limiting / Filter Bypass',
+        hints: [
+          "The API has a basic filter for repetitive requests",
+          "Try using different headers to bypass the filter (e.g., X-Forwarded-For)",
+          "Can you automate the requests to see if there is a block?"
+        ],
+        solution: "Use a script to send 1000 requests to the endpoint. If you get blocked, add a header like 'X-Forwarded-For: [random_ip]' to each request to bypass simple IP-based rate limiting filters."
+      }
+    ]
+  },
+  {
+    id: 'reporting',
+    name: 'Reporting',
+    icon: Target,
+    labs: 1,
+    color: 'text-emerald-500',
+    labList: [
+      {
+        id: 'report-1',
+        title: 'Create Bounty + Vulnerability Report',
+        difficulty: 'practitioner',
+        description: 'Learn how to document and report vulnerabilities professionally.',
+        objective: 'Submit a valid vulnerability report for a discovered XSS.',
+        endpoint: '/report-vulnerability',
+        vulnerability: 'Documentation',
+        hints: [
+          "Follow a standard bug bounty reporting template",
+          "Include steps to reproduce, impact, and remediation",
+          "Be clear and concise in your description"
+        ],
+        solution: "Navigate to the reporting interface. Fill in the details for the XSS found in Lab 1. Include the payload, the vulnerable URL, and suggest encoding output as a fix. Submit the report to earn points."
+      }
+    ]
+  },
+  {
+    id: 'softskills',
+    name: 'Soft Skills',
+    icon: Target,
+    labs: 1,
+    color: 'text-slate-500',
+    labList: [
+      {
+        id: 'soft-1',
+        title: 'Softskill Needed For The Future',
+        difficulty: 'apprentice',
+        description: 'Develop the essential communication skills for a cybersecurity professional.',
+        objective: 'Complete the ethics and communication module.',
+        endpoint: '/training/ethics',
+        vulnerability: 'Professional Development',
+        hints: [
+          "Cybersecurity isn't just about technical skills",
+          "Read the ethical guidelines carefully",
+          "Communication is key to getting vulnerabilities fixed"
+        ],
+        solution: "Complete the interactive quiz on cybersecurity ethics and professional communication. This module emphasizes the importance of responsible disclosure and clear technical writing."
       }
     ]
   }
