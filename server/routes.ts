@@ -24,9 +24,27 @@ export async function registerRoutes(
       store: new SessionStore({
         checkPeriod: 86400000,
       }),
-      cookie: { secure: false }, // Set to true in production with HTTPS
+      cookie: { 
+        secure: process.env.NODE_ENV === "production", // Secure flag
+        httpOnly: true, // HttpOnly flag
+        sameSite: "lax"
+      },
     })
   );
+
+  // Security Headers
+  app.use((req, res, next) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("Referrer-Policy", "no-referrer");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("X-XSS-Protection", "1; mode=block");
+    res.setHeader(
+      "Content-Security-Policy",
+      "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com;"
+    );
+    res.removeHeader("X-Powered-By"); // Remove server fingerprinting
+    next();
+  });
 
   // Replit AI Integrations
   registerChatRoutes(app);
