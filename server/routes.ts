@@ -6,6 +6,8 @@ import { api } from "@shared/routes";
 import { z } from "zod";
 import session from "express-session";
 import MemoryStore from "memorystore";
+import { registerChatRoutes } from "./replit_integrations/chat";
+import { registerImageRoutes } from "./replit_integrations/image";
 
 const SessionStore = MemoryStore(session);
 
@@ -25,6 +27,10 @@ export async function registerRoutes(
       cookie: { secure: false }, // Set to true in production with HTTPS
     })
   );
+
+  // Replit AI Integrations
+  registerChatRoutes(app);
+  registerImageRoutes(app);
 
   // Auth Routes
   app.post(api.auth.register.path, async (req, res) => {

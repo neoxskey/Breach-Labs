@@ -3,21 +3,42 @@ import { topics, type Lab, type Topic } from '@/data/labs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { CyberButton } from '@/components/CyberButton';
-import { Lock, Play, CheckCircle, AlertTriangle, ChevronRight, Terminal, RefreshCcw } from 'lucide-react';
+import { Lock, Play, CheckCircle, AlertTriangle, ChevronRight, Terminal, RefreshCcw, Bot } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useProgress } from '@/hooks/use-progress';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { ShadowOperator } from '@/components/ai/ShadowOperator';
 
 export default function Labs() {
   const [selectedTopic, setSelectedTopic] = useState<Topic>(topics[0]);
   const [activeLab, setActiveLab] = useState<Lab | null>(null);
+  const [isAiOpen, setIsAiOpen] = useState(false);
   const { user } = useAuth();
 
   return (
-    <div className="h-full flex flex-col md:flex-row gap-6 p-6 max-w-7xl mx-auto">
+    <div className="h-full flex flex-col md:flex-row gap-6 p-6 max-w-7xl mx-auto relative">
+      {/* AI Shadow Operator Button */}
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsAiOpen(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 bg-primary rounded-full shadow-[0_0_20px_rgba(34,197,94,0.4)] flex items-center justify-center z-50 group border-4 border-background"
+      >
+        <Bot className="w-7 h-7 text-black group-hover:animate-pulse" />
+        <span className="absolute -top-12 right-0 bg-primary text-black text-[10px] font-mono font-bold px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap">
+          SHADOW INTEL
+        </span>
+      </motion.button>
+
+      <ShadowOperator 
+        isOpen={isAiOpen} 
+        onClose={() => setIsAiOpen(false)} 
+        labId={activeLab?.id}
+        labTitle={activeLab?.title}
+      />
       {/* Topics Sidebar */}
       <div className="w-full md:w-64 flex-shrink-0 space-y-4">
         <h2 className="text-xl font-display text-primary mb-6 flex items-center gap-2">
