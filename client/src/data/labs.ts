@@ -552,6 +552,123 @@ export const topics: Topic[] = [
         solution: "Define an entity that points to your own server: <!ENTITY xxe SYSTEM 'http://your-server.com/log'>. If you see a request in your server logs, you've confirmed the XXE vulnerability even though the app didn't show the output."
       }
     ]
+  },
+  {
+    id: 'enumeration',
+    name: 'Enumeration',
+    icon: Search,
+    labs: 2,
+    color: 'text-gray-500',
+    labList: [
+      {
+        id: 'enum-1',
+        title: 'Directory/File Scanning',
+        difficulty: 'apprentice',
+        description: 'Discover hidden files using directory brute forcing.',
+        objective: 'Find the hidden admin configuration file.',
+        endpoint: '/',
+        vulnerability: 'Information Disclosure',
+        hints: [
+          "Try common directory names like /admin, /config, /backup",
+          "Check for sensitive file extensions like .bak, .old, .conf",
+          "The file is hidden in a common development path"
+        ],
+        solution: "Use a tool like Dirbuster or ffuf to scan the website. You will find a file at /config/admin.conf.bak which contains sensitive configuration data."
+      },
+      {
+        id: 'enum-2',
+        title: 'Sensitive Data Exposure',
+        difficulty: 'apprentice',
+        description: 'Extract sensitive information from publicly accessible files.',
+        objective: 'Find the database credentials leaked in a file.',
+        endpoint: '/',
+        vulnerability: 'Sensitive Data Exposure',
+        hints: [
+          "Check for common leakage points like /robots.txt or /.git",
+          "Sometimes developers leave debug files or logs accessible",
+          "Look for a file named 'debug.log' or similar"
+        ],
+        solution: "Navigate to /debug.log. This file contains a full trace of application startup, including the plaintext database connection string and credentials."
+      }
+    ]
+  },
+  {
+    id: 'broken-auth-2',
+    name: 'Advanced Auth',
+    icon: Shield,
+    labs: 3,
+    color: 'text-indigo-500',
+    labList: [
+      {
+        id: 'auth-5',
+        title: 'Bypass OTP Lead To Account Take Over',
+        difficulty: 'practitioner',
+        description: 'Bypass OTP verification to take over any account.',
+        objective: 'Log in as the admin by bypassing the OTP check.',
+        endpoint: '/login/otp',
+        vulnerability: 'Authentication Bypass',
+        hints: [
+          "Look for flaws in the OTP verification logic",
+          "Try manipulating the response from the server",
+          "Can you skip the OTP step entirely or force a success?"
+        ],
+        solution: "After entering the correct username and password, the site redirects to an OTP page. By intercepting the response of a failed OTP attempt and changing 'success: false' to 'success: true', the client-side logic can be fooled into allowing the login."
+      },
+      {
+        id: 'auth-6',
+        title: 'OTP Leakage',
+        difficulty: 'practitioner',
+        description: 'Find the leaked OTP code in the application response.',
+        objective: 'Discover the OTP for the admin account.',
+        endpoint: '/login/otp-request',
+        vulnerability: 'Information Disclosure',
+        hints: [
+          "Check the HTTP response when requesting an OTP",
+          "Sometimes sensitive data is accidentally included in JSON responses",
+          "Is the OTP hidden in the page source or a background request?"
+        ],
+        solution: "When you request an OTP for the admin account, inspect the JSON response from the server. The developer accidentally included the generated OTP in the 'debug_info' field of the response."
+      },
+      {
+        id: 'auth-7',
+        title: 'Bruteforce Attack',
+        difficulty: 'apprentice',
+        description: 'Perform a classic brute force attack on the login page.',
+        objective: 'Find the password for the user "carlos".',
+        endpoint: '/login',
+        vulnerability: 'Brute Force',
+        hints: [
+          "Use a common wordlist for passwords",
+          "Look for small differences in response time or size",
+          "The password is a common 4-digit PIN"
+        ],
+        solution: "Use a tool like Burp Intruder or Hydra to brute force the login page with the username 'carlos'. Use a wordlist of 4-digit pins. The correct password '1092' will return a 302 redirect instead of a 200 OK."
+      }
+    ]
+  },
+  {
+    id: 'upload',
+    name: 'File Upload',
+    icon: Code,
+    labs: 1,
+    color: 'text-violet-500',
+    labList: [
+      {
+        id: 'upload-1',
+        title: 'File Upload Lead To RCE + Backdoor',
+        difficulty: 'expert',
+        description: 'Upload a malicious script to gain remote command execution.',
+        objective: 'Execute the `whoami` command on the server.',
+        endpoint: '/account/avatar',
+        vulnerability: 'RCE via File Upload',
+        hints: [
+          "The avatar upload doesn't check file extensions properly",
+          "Try uploading a .php or .jsp or .js file (depending on server)",
+          "Use a webshell to execute commands"
+        ],
+        solution: "Upload a file named 'shell.php' (or similar) containing a webshell like `<?php system($_GET['cmd']); ?>`. Then navigate to /uploads/shell.php?cmd=whoami to execute commands on the server."
+      }
+    ]
   }
 ];
 
