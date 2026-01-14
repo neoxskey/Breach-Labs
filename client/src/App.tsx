@@ -63,7 +63,7 @@ function Layout({ children }: { children: React.ReactNode }) {
             <div className="flex items-center gap-4">
               <div className="text-right hidden sm:block">
                 <div className="text-xs font-mono text-primary">{user.username}</div>
-                <div className="text-[10px] text-muted-foreground uppercase">{user.role} // RANK: {user.stats.rank}</div>
+                <div className="text-[10px] text-muted-foreground uppercase">{user.role} // RANK: {user.stats?.rank || 'N/A'}</div>
               </div>
               <CyberButton 
                 variant="ghost" 
