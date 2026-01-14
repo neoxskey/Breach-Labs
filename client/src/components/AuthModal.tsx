@@ -47,7 +47,7 @@ export function AuthModal({ open, onOpenChange }: AuthModalProps) {
               </div>
             </div>
             <DialogTitle className="text-center text-2xl font-display tracking-widest text-primary text-glow">
-              CYBER ACADEMY PRO
+              BREACHLABS
             </DialogTitle>
             <DialogDescription className="text-center font-mono text-xs uppercase tracking-widest text-muted-foreground mt-2">
               {mode === 'login' ? 'Authenticate Identity' : 'Initialize New Protocol'}
