@@ -23,6 +23,10 @@ function Layout({ children }: { children: React.ReactNode }) {
     { href: '/settings', label: 'Settings', icon: Settings },
   ];
 
+  const handleNavClick = (href: string) => {
+    setLocation(href);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans relative overflow-hidden">
       {/* Background Effects */}
@@ -32,10 +36,10 @@ function Layout({ children }: { children: React.ReactNode }) {
       {/* Navbar */}
       <header className="h-16 border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50 px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-black font-bold font-display">
+          <div className="w-8 h-8 bg-primary rounded flex items-center justify-center text-black font-bold font-display cursor-pointer" onClick={() => handleNavClick('/')}>
             BL
           </div>
-          <span className="font-display font-bold tracking-widest text-lg hidden md:inline-block">
+          <span className="font-display font-bold tracking-widest text-lg hidden md:inline-block cursor-pointer" onClick={() => handleNavClick('/')}>
             BREACH<span className="text-primary">LABS</span>
           </span>
         </div>
@@ -45,15 +49,19 @@ function Layout({ children }: { children: React.ReactNode }) {
           {navItems.map((item) => {
             const isActive = location === item.href;
             return (
-              <Link key={item.href} href={item.href} className={cn(
-                "px-4 py-2 rounded-md font-mono text-sm flex items-center gap-2 transition-all duration-200",
-                isActive 
-                  ? "bg-primary/10 text-primary shadow-[0_0_10px_rgba(34,197,94,0.2)]" 
-                  : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-              )}>
+              <button
+                key={item.href}
+                onClick={() => handleNavClick(item.href)}
+                className={cn(
+                  "px-4 py-2 rounded-md font-mono text-sm flex items-center gap-2 transition-all duration-200",
+                  isActive 
+                    ? "bg-primary/10 text-primary shadow-[0_0_10px_rgba(34,197,94,0.2)]" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-white/5"
+                )}
+              >
                 <item.icon className="w-4 h-4" />
                 {item.label.toUpperCase()}
-              </Link>
+              </button>
             )
           })}
         </nav>
