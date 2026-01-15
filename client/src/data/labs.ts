@@ -708,54 +708,6 @@ export const topics: Topic[] = [
         solution: "Use a script to send 1000 requests to the endpoint. If you get blocked, add a header like 'X-Forwarded-For: [random_ip]' to each request to bypass simple IP-based rate limiting filters."
       }
     ]
-  },
-  {
-    id: 'reporting',
-    name: 'Reporting',
-    icon: Target,
-    labs: 1,
-    color: 'text-emerald-500',
-    labList: [
-      {
-        id: 'report-1',
-        title: 'Create Bounty + Vulnerability Report',
-        difficulty: 'practitioner',
-        description: 'Learn how to document and report vulnerabilities professionally.',
-        objective: 'Submit a valid vulnerability report for a discovered XSS.',
-        endpoint: '/report-vulnerability',
-        vulnerability: 'Documentation',
-        hints: [
-          "Follow a standard bug bounty reporting template",
-          "Include steps to reproduce, impact, and remediation",
-          "Be clear and concise in your description"
-        ],
-        solution: "Navigate to the reporting interface. Fill in the details for the XSS found in Lab 1. Include the payload, the vulnerable URL, and suggest encoding output as a fix. Submit the report to earn points."
-      }
-    ]
-  },
-  {
-    id: 'softskills',
-    name: 'Soft Skills',
-    icon: Target,
-    labs: 1,
-    color: 'text-slate-500',
-    labList: [
-      {
-        id: 'soft-1',
-        title: 'Softskill Needed For The Future',
-        difficulty: 'apprentice',
-        description: 'Develop the essential communication skills for a cybersecurity professional.',
-        objective: 'Complete the ethics and communication module.',
-        endpoint: '/training/ethics',
-        vulnerability: 'Professional Development',
-        hints: [
-          "Cybersecurity isn't just about technical skills",
-          "Read the ethical guidelines carefully",
-          "Communication is key to getting vulnerabilities fixed"
-        ],
-        solution: "Complete the interactive quiz on cybersecurity ethics and professional communication. This module emphasizes the importance of responsible disclosure and clear technical writing."
-      }
-    ]
   }
 ];
 
