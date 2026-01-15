@@ -156,9 +156,14 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
   const [status, setStatus] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   
+  const [unlockedHintLevel, setUnlockedHintLevel] = useState(0);
+  const [showDebrief, setShowDebrief] = useState(false);
+  
   const { updateProgress } = useProgress();
   const { user } = useAuth();
   const { toast } = useToast();
+
+  const isCompleted = user?.progress?.[lab.id]?.status === 'completed';
 
   const handleSend = async () => {
     setLoading(true);
@@ -298,6 +303,8 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
         className: "border-primary text-primary bg-primary/10",
       });
 
+      setShowDebrief(true);
+
       // Update backend if not already completed
       if (user?.progress?.[lab.id]?.status !== 'completed') {
         updateProgress({
@@ -374,15 +381,64 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
                   </div>
 
                   <div>
-                    <h3 className="text-sm font-mono text-accent mb-2 uppercase tracking-wider">Intelligence</h3>
-                    <ul className="space-y-2">
-                      {lab.hints.map((hint, i) => (
-                        <li key={i} className="text-xs font-mono text-muted-foreground flex items-start gap-2">
-                          <span className="text-accent shrink-0">[{i+1}]</span> {hint}
-                        </li>
-                      ))}
-                    </ul>
+                    <h3 className="text-sm font-mono text-accent mb-2 uppercase tracking-wider flex items-center justify-between">
+                      Intelligence Feed
+                      <span className="text-[10px] text-muted-foreground">{unlockedHintLevel}/{lab.hints.length} UNLOCKED</span>
+                    </h3>
+                    <div className="space-y-3">
+                      {lab.hints.map((hint, i) => {
+                        const isUnlocked = i < unlockedHintLevel;
+                        return (
+                          <div 
+                            key={i} 
+                            className={cn(
+                              "p-3 rounded border font-mono text-xs transition-all",
+                              isUnlocked 
+                                ? "bg-accent/5 border-accent/20 text-muted-foreground" 
+                                : "bg-black/20 border-border/50 text-muted-foreground/30 blur-[1px]"
+                            )}
+                          >
+                            <div className="flex items-start gap-2">
+                              <span className={cn("shrink-0", isUnlocked ? "text-accent" : "text-muted-foreground/20")}>
+                                [{i+1}]
+                              </span> 
+                              {isUnlocked ? hint : "ENCRYPTED DATA"}
+                            </div>
+                          </div>
+                        );
+                      })}
+                      
+                      {unlockedHintLevel < lab.hints.length && (
+                        <CyberButton 
+                          variant="ghost" 
+                          size="sm" 
+                          className="w-full h-8 text-[10px] border-dashed"
+                          onClick={() => setUnlockedHintLevel(prev => prev + 1)}
+                        >
+                          REQUEST NEXT INTEL LEVEL
+                        </CyberButton>
+                      )}
+                    </div>
                   </div>
+
+                  {showDebrief && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="p-4 rounded border border-primary/30 bg-primary/5 space-y-3"
+                    >
+                      <h3 className="text-xs font-mono text-primary uppercase tracking-widest flex items-center gap-2">
+                        <CheckCircle className="w-3 h-3" /> Mission Debrief
+                      </h3>
+                      <p className="text-[11px] text-muted-foreground leading-relaxed italic">
+                        {lab.solution || "Mission objective achieved. Tactical superiority established."}
+                      </p>
+                      <div className="pt-2 border-t border-primary/10 flex justify-between items-center">
+                        <span className="text-[9px] font-mono text-primary/50 uppercase tracking-tighter">Status: Complete</span>
+                        <Badge variant="outline" className="text-[9px] h-4 bg-primary/10 text-primary border-primary/20">OPERATIVE PROMOTED</Badge>
+                      </div>
+                    </motion.div>
+                  )}
                 </motion.div>
               ) : (
                 <motion.div
