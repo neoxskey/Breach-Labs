@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { topics, type Lab, type Topic } from '@/data/labs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { CyberButton } from '@/components/CyberButton';
-import { Lock, Play, CheckCircle, AlertTriangle, ChevronRight, Terminal, RefreshCcw, Bot } from 'lucide-react';
+import { Lock, Play, CheckCircle, AlertTriangle, ChevronRight, Terminal, RefreshCcw, Bot, ShieldAlert } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 import { useProgress } from '@/hooks/use-progress';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { ShadowOperator } from '@/components/ai/ShadowOperator';
+import { Badge } from '@/components/ui/badge';
 
 export default function Labs() {
   const [selectedTopic, setSelectedTopic] = useState<Topic>(topics[0]);
@@ -158,12 +159,20 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
   
   const [unlockedHintLevel, setUnlockedHintLevel] = useState(0);
   const [showDebrief, setShowDebrief] = useState(false);
+  const [showSolveOverlay, setShowSolveOverlay] = useState(false);
   
   const { updateProgress } = useProgress();
   const { user } = useAuth();
   const { toast } = useToast();
 
   const isCompleted = user?.progress?.[lab.id]?.status === 'completed';
+
+  // Show debrief if already completed
+  useEffect(() => {
+    if (isCompleted) {
+      setShowDebrief(true);
+    }
+  }, [isCompleted]);
 
   const handleSend = async () => {
     setLoading(true);
@@ -297,6 +306,9 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
     setLoading(false);
 
     if (isSuccess) {
+      setShowSolveOverlay(true);
+      setTimeout(() => setShowSolveOverlay(false), 3000);
+
       toast({
         title: "VULNERABILITY EXPLOITED",
         description: `Target ${lab.title} compromised successfully.`,
@@ -324,7 +336,7 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-[95vw] w-full h-[90vh] p-0 gap-0 bg-background border-border overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="h-14 border-b bg-card flex items-center justify-between px-6 shrink-0">
+        <div className="h-14 border-b bg-card flex items-center justify-between px-6 shrink-0 relative z-10">
           <div className="flex items-center gap-3">
             <div className={`w-2 h-2 rounded-full ${user?.progress?.[lab.id]?.status === 'completed' ? 'bg-green-500 shadow-[0_0_10px_lime]' : 'bg-red-500 animate-pulse'}`} />
             <span className="font-display font-bold tracking-wider text-lg">{lab.title}</span>
@@ -333,6 +345,32 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
             <span className="text-xs font-mono text-muted-foreground">Target: {lab.vulnerability}</span>
           </div>
         </div>
+
+        {/* Visual Reinforcement Overlay */}
+        <AnimatePresence>
+          {showSolveOverlay && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm pointer-events-none"
+            >
+              <motion.div
+                initial={{ scale: 0.5, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                className="text-center space-y-4"
+              >
+                <div className="relative">
+                  <ShieldAlert className="w-24 h-24 text-primary mx-auto animate-pulse" />
+                  <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
+                </div>
+                <h2 className="text-4xl font-display text-primary tracking-[0.2em] font-bold">SYSTEM BREACHED</h2>
+                <div className="h-1 w-48 bg-primary mx-auto" />
+                <p className="font-mono text-primary/80 animate-pulse">ACCESS GRANTED // DATA EXFILTRATED</p>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Workspace */}
         <div className="flex flex-1 overflow-hidden">
