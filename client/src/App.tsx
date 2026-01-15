@@ -7,6 +7,7 @@ import { AuthModal } from "@/components/AuthModal";
 import { useEffect, useState } from "react";
 import Labs from "@/pages/Labs";
 import Dashboard from "@/pages/Dashboard";
+import Profile from "@/pages/Profile";
 import { Loader2, Terminal, UserCircle, LayoutDashboard, Settings, LogOut } from "lucide-react";
 import { CyberButton } from "@/components/CyberButton";
 import { cn } from "@/lib/utils";
@@ -134,7 +135,7 @@ function AppRouter() {
       <Switch>
         <Route path="/" component={Labs} />
         <Route path="/dashboard" component={Dashboard} />
-        <Route path="/profile" component={Dashboard} /> {/* Reusing Dashboard for profile MVP */}
+        <Route path="/profile" component={Profile} />
         <Route path="/settings">
           <div className="p-12 text-center text-muted-foreground font-mono">
             SYSTEM SETTINGS LOCKED BY ADMINISTRATOR
