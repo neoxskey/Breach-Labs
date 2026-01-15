@@ -319,13 +319,22 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
 
       // Update backend if not already completed
       if (user?.progress?.[lab.id]?.status !== 'completed') {
+        const completedAt = new Date().toISOString();
+        const updatedProgress = {
+          ...user?.progress,
+          [lab.id]: { status: 'completed', completedAt }
+        };
+        
+        const completedCount = Object.values(updatedProgress).filter(p => p.status === 'completed').length;
+        
         updateProgress({
           labId: lab.id,
           status: 'completed',
           stats: {
             ...user?.stats,
-            completed: (user?.stats?.completed || 0) + 1,
-            points: (user?.stats?.points || 0) + (lab.difficulty === 'apprentice' ? 10 : lab.difficulty === 'practitioner' ? 30 : 50)
+            completed: completedCount,
+            points: (user?.stats?.points || 0) + (lab.difficulty === 'apprentice' ? 10 : lab.difficulty === 'practitioner' ? 30 : 50),
+            lastActive: new Date().toDateString()
           }
         });
       }
@@ -341,8 +350,18 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
             <div className={`w-2 h-2 rounded-full ${user?.progress?.[lab.id]?.status === 'completed' ? 'bg-green-500 shadow-[0_0_10px_lime]' : 'bg-red-500 animate-pulse'}`} />
             <span className="font-display font-bold tracking-wider text-lg">{lab.title}</span>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-muted-foreground">Target: {lab.vulnerability}</span>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-mono text-muted-foreground">Target: {lab.vulnerability}</span>
+            </div>
+            <CyberButton 
+              size="sm" 
+              variant="secondary"
+              className="h-8 text-[10px] font-mono border-red-500/50 text-red-500 hover:bg-red-500/10"
+              onClick={onClose}
+            >
+              TERMINATE SESSION
+            </CyberButton>
           </div>
         </div>
 
