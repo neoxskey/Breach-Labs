@@ -505,7 +505,7 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
                         <CheckCircle className="w-3 h-3" /> Mission Debrief
                       </h3>
                       <p className="text-[11px] text-muted-foreground leading-relaxed italic">
-                        {lab.solution || "Mission objective achieved. Tactical superiority established."}
+                        {lab.debrief || "Mission objective achieved. Tactical superiority established. The vulnerability was successfully exploited by bypassing intended logic gates."}
                       </p>
                       <div className="pt-2 border-t border-primary/10 flex justify-between items-center">
                         <span className="text-[9px] font-mono text-primary/50 uppercase tracking-tighter">Status: Complete</span>

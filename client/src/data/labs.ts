@@ -10,6 +10,7 @@ export interface Lab {
   vulnerability: string;
   hints: string[];
   solution?: string;
+  debrief?: string;
 }
 
 export interface Topic {
@@ -44,7 +45,8 @@ export const topics: Topic[] = [
           "Comment out the rest of the query with --",
           "Final payload: ' OR 1=1--"
         ],
-        solution: "Append ' OR 1=1-- to the category parameter in the URL. For example: /filter?category=Gifts' OR 1=1--. This makes the database query return all items because 1=1 is always true."
+        solution: "Append ' OR 1=1-- to the category parameter in the URL. For example: /filter?category=Gifts' OR 1=1--. This makes the database query return all items because 1=1 is always true.",
+        debrief: "By injecting a logical 'OR' condition that is always true (1=1) and commenting out the rest of the query, you bypassed the intended category filter. This allowed the database to return every record in the products table regardless of its status or category."
       },
       {
         id: 'sqli-2',
@@ -61,7 +63,8 @@ export const topics: Topic[] = [
           "Leave password field empty or any value",
           "You'll be logged in as administrator"
         ],
-        solution: "Enter administrator'-- in the username field and anything in the password field. The -- comments out the rest of the SQL query that would normally check the password, allowing you to log in as the first user found (administrator)."
+        solution: "Enter administrator'-- in the username field and anything in the password field. The -- comments out the rest of the SQL query that would normally check the password, allowing you to log in as the first user found (administrator).",
+        debrief: "The application's login query was concatenated with user input. By injecting a comment operator (--), you truncated the SQL command before the password verification logic was executed, forcing the system to authenticate you as the specified user without a secret key."
       },
       {
         id: 'sqli-3',
@@ -78,7 +81,8 @@ export const topics: Topic[] = [
           "' UNION SELECT NULL,NULL,NULL--",
           "3 columns found when query succeeds"
         ],
-        solution: "Try adding NULLs to a UNION SELECT statement until the error disappears. Payload: ' UNION SELECT NULL,NULL,NULL--. If the page loads correctly with 3 NULLs, the original query has 3 columns."
+        solution: "Try adding NULLs to a UNION SELECT statement until the error disappears. Payload: ' UNION SELECT NULL,NULL,NULL--. If the page loads correctly with 3 NULLs, the original query has 3 columns.",
+        debrief: "A UNION attack requires the injected query to have the same number of columns as the original. By systematically adding NULL values, you mapped the database's internal structure without needing to know specific data types yet."
       },
       {
         id: 'sqli-4',
@@ -95,7 +99,8 @@ export const topics: Topic[] = [
           "Administrator credentials will appear",
           "Use them to login"
         ],
-        solution: "Use UNION to pull data from the users table. Payload: ' UNION SELECT username,password FROM users--. This will display the contents of the users table in the product list, revealing the admin password."
+        solution: "Use UNION to pull data from the users table. Payload: ' UNION SELECT username,password FROM users--. This will display the contents of the users table in the product list, revealing the admin password.",
+        debrief: "Once the column count was established, you used the UNION operator to append sensitive data from a completely different table ('users') to the legitimate application output. This is a primary method for full database exfiltration."
       }
     ]
   },
@@ -121,7 +126,8 @@ export const topics: Topic[] = [
           "Script executes immediately",
           "Lab solved when alert triggers"
         ],
-        solution: "Inject a script tag into the search query parameter. Payload: /search?query=<script>alert(1)</script>. The server reflects this input directly into the HTML without sanitization."
+        solution: "Inject a script tag into the search query parameter. Payload: /search?query=<script>alert(1)</script>. The server reflects this input directly into the HTML without sanitization.",
+        debrief: "This reflected XSS vulnerability exists because the application takes user-supplied data and displays it on the page without encoding it. This allows an attacker to execute arbitrary JavaScript in the context of the user's session."
       },
       {
         id: 'xss-2',
@@ -138,7 +144,8 @@ export const topics: Topic[] = [
           "Executes for all viewers",
           "Persistent XSS attack"
         ],
-        solution: "Submit a comment containing a script tag. Payload: <script>alert(document.domain)</script>. Since comments are saved and displayed back to users, the script will execute every time the page is loaded."
+        solution: "Submit a comment containing a script tag. Payload: <script>alert(document.domain)</script>. Since comments are saved and displayed back to users, the script will execute every time the page is loaded.",
+        debrief: "Stored XSS is significantly more dangerous than reflected XSS because the malicious script is persisted on the server. Every user who views the affected page will trigger the exploit automatically."
       },
       {
         id: 'xss-3',
