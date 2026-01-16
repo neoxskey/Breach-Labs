@@ -162,7 +162,8 @@ export const topics: Topic[] = [
           "Closes the tag first",
           "Then injects script"
         ],
-        solution: "Close the existing HTML tag attribute and inject a new script tag. Payload: \"><script>alert(1)</script>. This breaks out of the intended data context and into an execution context."
+        solution: "Close the existing HTML tag attribute and inject a new script tag. Payload: \"><script>alert(1)</script>. This breaks out of the intended data context and into an execution context.",
+        debrief: "DOM-based XSS occurs when the application's client-side scripts write user-controlled data to the Document Object Model (DOM) in an unsafe way. By closing the attribute context prematurely, you forced the browser to interpret your payload as a executable script tag."
       }
     ]
   },
@@ -188,7 +189,8 @@ export const topics: Topic[] = [
           "Form submits on page load",
           "Email changed without user action"
         ],
-        solution: "Construct an HTML page that auto-submits a POST request to /change-email with a new email address. When a logged-in user visits your malicious page, their browser will send the request with their session cookies."
+        solution: "Construct an HTML page that auto-submits a POST request to /change-email with a new email address. When a logged-in user visits your malicious page, their browser will send the request with their session cookies.",
+        debrief: "Cross-Site Request Forgery (CSRF) exploits the trust a site has in a user's browser. Because the application lacked unique request tokens, you were able to forge a state-changing request that the browser automatically authenticated using the victim's active session cookies."
       },
       {
         id: 'csrf-2',
@@ -205,7 +207,8 @@ export const topics: Topic[] = [
           "Use: /change-email?email=attacker@evil.com",
           "Protection bypassed"
         ],
-        solution: "Convert the attack to a GET request. Instead of a form, use a simple link or image tag: <img src='/change-email?email=attacker@evil.com'>. If the server accepts GET for state-changing actions, the CSRF protection is bypassed."
+        solution: "Convert the attack to a GET request. Instead of a form, use a simple link or image tag: <img src='/change-email?email=attacker@evil.com'>. If the server accepts GET for state-changing actions, the CSRF protection is bypassed.",
+        debrief: "This vulnerability highlights a common implementation flaw where security controls are only applied to specific HTTP methods. By switching from POST to GET, you bypassed the token validation logic entirely while still achieving the unauthorized state change."
       }
     ]
   },
@@ -231,7 +234,8 @@ export const topics: Topic[] = [
           "Valid username: 'Incorrect password'",
           "Username 'carlos' is valid"
         ],
-        solution: "Systematically test usernames. When you see 'Incorrect password' instead of 'Invalid username', you know the username exists. Try 'carlos' to see the difference."
+        solution: "Systematically test usernames. When you see 'Incorrect password' instead of 'Invalid username', you know the username exists. Try 'carlos' to see the difference.",
+        debrief: "Information disclosure in error messages is a classic authentication flaw. By providing specific feedback about which part of the credentials was wrong, the system allowed you to confirm valid usernames, significantly reducing the search space for a subsequent brute-force attack."
       },
       {
         id: 'auth-2',
@@ -248,7 +252,8 @@ export const topics: Topic[] = [
           "Change username to carlos",
           "Set new password for carlos"
         ],
-        solution: "Trigger a password reset for your own account, then intercept the final submission request and change the 'username' parameter from your name to 'carlos'. If the server doesn't re-validate the token, it will reset carlos's password."
+        solution: "Trigger a password reset for your own account, then intercept the final submission request and change the 'username' parameter from your name to 'carlos'. If the server doesn't re-validate the token, it will reset carlos's password.",
+        debrief: "This lab demonstrates a 'broken object level authorization' in a password reset flow. The server correctly identified your session but failed to verify that you were authorized to reset the password for the specific username provided in the request body."
       },
       {
         id: 'auth-3',
@@ -265,7 +270,8 @@ export const topics: Topic[] = [
           "Navigate directly to /my-account",
           "Access granted without 2FA"
         ],
-        solution: "Login with the known username and password. When prompted for the 2FA code, simply manually type /my-account into the address bar. If the session is already established before 2FA, you bypass the check."
+        solution: "Login with the known username and password. When prompted for the 2FA code, simply manually type /my-account into the address bar. If the session is already established before 2FA, you bypass the check.",
+        debrief: "Multifactor authentication (MFA) is only effective if the system enforces it as a mandatory gate. Here, the session was fully established upon password verification, and the 2FA screen was merely a UI-level hurdle that could be bypassed via direct navigation."
       },
       {
         id: 'auth-4',
@@ -282,7 +288,8 @@ export const topics: Topic[] = [
           "Base64 encode results",
           "Use cookie to login"
         ],
-        solution: "Base64 decode the 'stay-logged-in' cookie to see its format (e.g., 'wiener:51102142273e913a483569485145558d'). The second part is an MD5 hash of the password. Brute force common passwords, MD5 them, and rebuild the cookie."
+        solution: "Base64 decode the 'stay-logged-in' cookie to see its format (e.g., 'wiener:51102142273e913a483569485145558d'). The second part is an MD5 hash of the password. Brute force common passwords, MD5 them, and rebuild the cookie.",
+        debrief: "Predictable session tokens are a high-risk vulnerability. By reverse-engineering the cookie's encoding and hashing algorithm, you were able to generate a valid persistent session for any user without ever knowing their actual password."
       }
     ]
   },
@@ -308,7 +315,8 @@ export const topics: Topic[] = [
           "No authentication required",
           "Delete carlos user"
         ],
-        solution: "Simply navigate to /administrator-panel. The server assumes you are authorized just by knowing the URL. Once inside, you can perform administrative actions like deleting users."
+        solution: "Simply navigate to /administrator-panel. The server assumes you are authorized just by knowing the URL. Once inside, you can perform administrative actions like deleting users.",
+        debrief: "Security through obscurity is not security. By relying solely on the 'hidden' nature of the URL rather than implementing proper access control checks, the application left its most sensitive functions exposed to anyone who could guess or discover the path."
       },
       {
         id: 'access-2',
@@ -325,7 +333,8 @@ export const topics: Topic[] = [
           "Admin access granted",
           "Delete carlos user"
         ],
-        solution: "Intercept the request after logging in and look for a 'roleid' or 'isAdmin' parameter. Change roleid=1 to roleid=2. The server trusts the client-provided role value."
+        solution: "Intercept the request after logging in and look for a 'roleid' or 'isAdmin' parameter. Change roleid=1 to roleid=2. The server trusts the client-provided role value.",
+        debrief: "Privilege escalation often occurs when the server trusts client-side state. By modifying a hidden parameter that controlled your user role, you successfully elevated your permissions because the server failed to verify your role against its own internal records."
       },
       {
         id: 'access-3',
@@ -342,7 +351,8 @@ export const topics: Topic[] = [
           "Access carlos data",
           "Retrieve API key"
         ],
-        solution: "Change the 'id' parameter in the URL /my-account?id=wiener to /my-account?id=carlos. If the server doesn't check if the requester owns the ID, you can view private data of any user."
+        solution: "Change the 'id' parameter in the URL /my-account?id=wiener to /my-account?id=carlos. If the server doesn't check if the requester owns the ID, you can view private data of any user.",
+        debrief: "Insecure Direct Object Reference (IDOR) occurs when an application uses user-supplied input to access objects directly. By changing a simple ID in the URL, you bypassed authorization logic that should have restricted data access to the account owner."
       },
       {
         id: 'access-4',
@@ -359,7 +369,8 @@ export const topics: Topic[] = [
           "Skip to step 2",
           "Privilege escalation!"
         ],
-        solution: "Identify the two requests used to change a role. The first checks permissions, but the second (the confirmation) might not. Skip the first request and send the second one directly with your target parameters."
+        solution: "Identify the two requests used to change a role. The first checks permissions, but the second (the confirmation) might not. Skip the first request and send the second one directly with your target parameters.",
+        debrief: "Complex workflows often have inconsistent security controls across different steps. By identifying that the final 'confirmation' step lacked the same rigorous authorization checks as the initial step, you found a gap to execute a privileged action."
       }
     ]
   },
@@ -385,7 +396,8 @@ export const topics: Topic[] = [
           "Change price to 0.01",
           "Purchase completed!"
         ],
-        solution: "Add an item to your cart and intercept the POST request. Change the 'price' parameter from 1337.00 to 0.01. The server trusts the price sent from the browser."
+        solution: "Add an item to your cart and intercept the POST request. Change the 'price' parameter from 1337.00 to 0.01. The server trusts the price sent from the browser.",
+        debrief: "Business logic vulnerabilities often stem from trusting client-side data for critical calculations. By modifying the price in transit, you demonstrated that the server was not performing its own server-side validation of product costs before processing the transaction."
       },
       {
         id: 'business-2',
@@ -402,7 +414,8 @@ export const topics: Topic[] = [
           "Total becomes negative",
           "Checkout successful"
         ],
-        solution: "Add an expensive item to your cart. Then, add a cheap item but change its quantity to a large negative number (e.g., -999). This reduces the total cart value to almost zero or negative, allowing you to checkout for free."
+        solution: "Add an expensive item to your cart. Then, add a cheap item but change its quantity to a large negative number (e.g., -999). This reduces the total cart value to almost zero or negative, allowing you to checkout for free.",
+        debrief: "This exploit targets an oversight in input validation where mathematical logic is applied without checking for valid ranges. By using negative quantities, you manipulated the cart total to bypass payment requirements, a classic example of a business logic flaw."
       },
       {
         id: 'business-3',
@@ -419,7 +432,8 @@ export const topics: Topic[] = [
           "Domain check after",
           "Admin panel accessible"
         ],
-        solution: "Register with a normal email. After logging in, use the 'change email' feature to set it to something like 'admin@dontwannacry.com'. If the domain check is only applied during the update and not strictly enforced, you gain admin privileges."
+        solution: "Register with a normal email. After logging in, use the 'change email' feature to set it to something like 'admin@dontwannacry.com'. If the domain check is only applied during the update and not strictly enforced, you gain admin privileges.",
+        debrief: "Security checks must be consistent across all entry points. By finding a 'change email' feature that applied less rigorous validation than the registration process, you successfully bypassed the domain-level access control intended to restrict admin access."
       },
       {
         id: 'business-4',
@@ -436,7 +450,8 @@ export const topics: Topic[] = [
           "Endpoint accepts it",
           "Admin password changed!"
         ],
-        solution: "When changing your own password, add an extra parameter to the request: &username=administrator. If the backend uses a generic update function that takes all inputs, it might update the administrator's password instead of yours."
+        solution: "When changing your own password, add an extra parameter to the request: &username=administrator. If the backend uses a generic update function that takes all inputs, it might update the administrator's password instead of yours.",
+        debrief: "Mass assignment or parameter injection occurs when an application binds too many parameters to an internal object. By adding an unauthorized 'username' parameter, you manipulated the server into updating a different user record than intended."
       }
     ]
   },
@@ -462,7 +477,8 @@ export const topics: Topic[] = [
           "Admin panel found",
           "Delete carlos user"
         ],
-        solution: "Change the 'stockApi' parameter to http://localhost/admin. The server will fetch its own internal admin page and display it to you. Navigate to the delete user link shown in the response."
+        solution: "Change the 'stockApi' parameter to http://localhost/admin. The server will fetch its own internal admin page and display it to you. Navigate to the delete user link shown in the response.",
+        debrief: "Server-Side Request Forgery (SSRF) allows an attacker to make the server initiate requests to unintended locations. By targeting 'localhost', you bypassed perimeter defenses to reach an internal management interface that was only accessible from within the server's own network."
       },
       {
         id: 'ssrf-2',
@@ -479,7 +495,8 @@ export const topics: Topic[] = [
           "Admin at 192.168.0.68",
           "Access internal admin"
         ],
-        solution: "The server can access other machines on its private network. Brute force the internal IP range (e.g., http://192.168.0.X:8080/admin) until you get a 200 OK response, indicating where the admin panel is located."
+        solution: "The server can access other machines on its private network. Brute force the internal IP range (e.g., http://192.168.0.X:8080/admin) until you get a 200 OK response, indicating where the admin panel is located.",
+        debrief: "SSRF can be used as a pivot point for internal reconnaissance. By forcing the server to scan its own private subnet, you discovered an unhardened administrative service on a separate internal machine that would otherwise be unreachable from the public internet."
       },
       {
         id: 'ssrf-3',
@@ -496,7 +513,8 @@ export const topics: Topic[] = [
           "Or use 127.0.0.1",
           "Blacklist bypassed!"
         ],
-        solution: "If 'localhost' is blacklisted, try using '127.0.0.1' or the decimal representation '2130706433'. Often, developers only block the literal string 'localhost'."
+        solution: "If 'localhost' is blacklisted, try using '127.0.0.1' or the decimal representation '2130706433'. Often, developers only block the literal string 'localhost'.",
+        debrief: "This lab demonstrates the futility of 'blacklist' security. By using an alternative representation of the same local IP address, you successfully bypassed a naive filter that was only looking for a specific string rather than validating the destination of the request."
       }
     ]
   },
@@ -522,7 +540,8 @@ export const topics: Topic[] = [
           "Reference &xxe; in XML",
           "File contents returned"
         ],
-        solution: "Inject an external entity definition into the XML body: <!DOCTYPE test [ <!ENTITY xxe SYSTEM 'file:///etc/passwd'> ]>. Then reference &xxe; inside one of the XML tags. The server will replace it with the file contents."
+        solution: "Inject an external entity definition into the XML body: <!DOCTYPE test [ <!ENTITY xxe SYSTEM 'file:///etc/passwd'> ]>. Then reference &xxe; inside one of the XML tags. The server will replace it with the file contents.",
+        debrief: "XML External Entity (XXE) vulnerabilities occur when an XML parser is configured to process external entities. By defining a custom entity that pointed to a local system file, you leveraged the parser's own functionality to exfiltrate sensitive server-side data."
       },
       {
         id: 'xxe-2',
@@ -539,7 +558,8 @@ export const topics: Topic[] = [
           "Retrieve IAM credentials",
           "Sensitive data exposed"
         ],
-        solution: "Instead of a file path, use a URL in the entity definition: <!ENTITY xxe SYSTEM 'http://169.254.169.254/latest/meta-data/iam/security-credentials/admin'>. The server will make the HTTP request and return the result."
+        solution: "Instead of a file path, use a URL in the entity definition: <!ENTITY xxe SYSTEM 'http://169.254.169.254/latest/meta-data/iam/security-credentials/admin'>. The server will make the HTTP request and return the result.",
+        debrief: "XXE can be combined with other vulnerabilities like SSRF. By defining an entity that pointed to an internal cloud metadata service, you forced the XML parser to fetch and return sensitive cloud credentials that were never meant to be exposed."
       },
       {
         id: 'xxe-3',
@@ -556,7 +576,8 @@ export const topics: Topic[] = [
           "Monitor HTTP/DNS requests",
           "Confirm XXE via logs"
         ],
-        solution: "Define an entity that points to your own server: <!ENTITY xxe SYSTEM 'http://your-server.com/log'>. If you see a request in your server logs, you've confirmed the XXE vulnerability even though the app didn't show the output."
+        solution: "Define an entity that points to your own server: <!ENTITY xxe SYSTEM 'http://your-server.com/log'>. If you see a request in your server logs, you've confirmed the XXE vulnerability even though the app didn't show the output.",
+        debrief: "Blind vulnerabilities require out-of-band (OOB) techniques for confirmation. By triggering a request to a server under your control, you proved that the XML parser was processing external entities even though the application didn't display the results directly."
       }
     ]
   },
@@ -580,7 +601,8 @@ export const topics: Topic[] = [
           "Check for sensitive file extensions like .bak, .old, .conf",
           "The file is hidden in a common development path"
         ],
-        solution: "Use a tool like Dirbuster or ffuf to scan the website. You will find a file at /config/admin.conf.bak which contains sensitive configuration data."
+        solution: "Use a tool like Dirbuster or ffuf to scan the website. You will find a file at /config/admin.conf.bak which contains sensitive configuration data.",
+        debrief: "Information disclosure through predictable file naming is a common reconnaissance finding. By systematically scanning for backup files and common configuration paths, you discovered sensitive system data that was accidentally left publicly accessible."
       },
       {
         id: 'enum-2',
@@ -595,7 +617,8 @@ export const topics: Topic[] = [
           "Sometimes developers leave debug files or logs accessible",
           "Look for a file named 'debug.log' or similar"
         ],
-        solution: "Navigate to /debug.log. This file contains a full trace of application startup, including the plaintext database connection string and credentials."
+        solution: "Navigate to /debug.log. This file contains a full trace of application startup, including the plaintext database connection string and credentials.",
+        debrief: "Debug logs are a goldmine for attackers. This lab highlights the importance of disabling verbose logging in production environments and ensuring that temporary files created during development are removed before deployment."
       }
     ]
   },
