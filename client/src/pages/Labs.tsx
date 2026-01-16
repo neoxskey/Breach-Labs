@@ -13,6 +13,8 @@ import { useToast } from '@/hooks/use-toast';
 import { ShadowOperator } from '@/components/ai/ShadowOperator';
 import { Badge } from '@/components/ui/badge';
 
+import { TacticalEcho } from '@/components/labs/TacticalEcho';
+
 export default function Labs() {
   const [selectedTopic, setSelectedTopic] = useState<Topic>(topics[0]);
   const [activeLab, setActiveLab] = useState<Lab | null>(null);
@@ -160,6 +162,8 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
   const [unlockedHintLevel, setUnlockedHintLevel] = useState(0);
   const [showDebrief, setShowDebrief] = useState(false);
   const [showSolveOverlay, setShowSolveOverlay] = useState(false);
+  const [isEchoOpen, setIsEchoOpen] = useState(false);
+  const [lastPayload, setLastPayload] = useState('');
   
   const { updateProgress } = useProgress();
   const { user } = useAuth();
@@ -178,6 +182,8 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
     setLoading(true);
     setResponse(null);
     setStatus(null);
+    const currentPayload = method === 'GET' ? path : body;
+    setLastPayload(currentPayload);
 
     // Simulate network delay
     await new Promise(resolve => setTimeout(resolve, 600));
@@ -307,7 +313,10 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
 
     if (isSuccess) {
       setShowSolveOverlay(true);
-      setTimeout(() => setShowSolveOverlay(false), 3000);
+      setTimeout(() => {
+        setShowSolveOverlay(false);
+        setIsEchoOpen(true);
+      }, 3000);
 
       toast({
         title: "VULNERABILITY EXPLOITED",
@@ -390,6 +399,14 @@ function LabWorkspace({ lab, open, onClose }: { lab: Lab, open: boolean, onClose
             </motion.div>
           )}
         </AnimatePresence>
+
+        <TacticalEcho 
+          isOpen={isEchoOpen} 
+          onClose={() => setIsEchoOpen(false)}
+          payload={lastPayload}
+          response={response || ''}
+          vulnerabilityType={lab.vulnerability}
+        />
 
         {/* Workspace */}
         <div className="flex flex-1 overflow-hidden">
